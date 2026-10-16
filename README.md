@@ -10,7 +10,9 @@
 | 2. 문장 임베딩 (bge-m3) | `src/embed.py` | 완료 |
 | 2-1. 임베딩 점검 | `src/check_embeddings.py` | 완료 |
 | 3. TF-IDF (공백 해석용) | `src/tfidf.py` | 완료 |
-| 4. GTM 기술맵, 5~8. 공백 탐색·역매핑·해석 | - | 예정 |
+| 4. GTM 기술맵 (20·25·30 격자) | `src/gtm.py`, `src/gtm_map.py`, `src/plot_gtm_map.py` | 완료 |
+| 4-1. 격자 크기 비교 | `src/grid_sweep.py` | 완료 (기본 격자는 결정 전, 30×30 검토 중) |
+| 5~8. 공백 탐색·역매핑·해석 | - | 예정 |
 
 ## 데이터
 
@@ -30,6 +32,9 @@ python3 src/preprocess.py         # 정제 → data/interim/patents_clean.parque
 python3 src/embed.py              # 임베딩 → data/interim/emb_bge_m3.npy
 python3 src/check_embeddings.py   # 점검 → data/interim/emb_check.json
 python3 src/tfidf.py              # TF-IDF → data/interim/tfidf_matrix.npz
+python3 src/gtm_map.py            # GTM 학습·점검 → data/interim/gtm/
+python3 src/plot_gtm_map.py 25    # 점검 그림 → outputs/figures/ (숫자 = 격자 크기)
+python3 src/grid_sweep.py         # 격자 크기 비교 → data/interim/gtm/grid_sweep.csv
 ```
 
 - `embed.py`는 처음 실행할 때 bge-m3 가중치(2.27GB)를 내려받습니다.
@@ -60,3 +65,14 @@ python3 src/tfidf.py              # TF-IDF → data/interim/tfidf_matrix.npz
 - Kiwi로 일반명사·고유명사·영문만 남기고, 특허 상투어를 불용어로 뺍니다. 숫자는 "제1"·"제2" 같은 서수에서 나온 잡음이 대부분이라 남기지 않습니다.
 - 1~2-gram, 5건 미만·70% 초과 단어 제외, 최대 30,000개, sublinear TF, L2 정규화를 씁니다.
 - 행은 정제본과 같은 순서라서 임베딩·GTM 결과와 행끼리 바로 대응합니다.
+
+**GTM 기술맵 (`gtm.py`, `gtm_map.py`)**
+
+- GTM(Bishop, Svensén & Williams, 1998)을 numpy로 구현했습니다. 학습에는 bge-m3 벡터만 씁니다.
+- 설정: RBF 10×10, 폭 = 중심 간격의 1.0배, 정규화 α = 0.001, PCA 초기화(무작위성 없음)
+- 저장: 격자별 모델 파라미터, 특허별 cell·2D 좌표, cell별 원공간 벡터 y_k(빈 cell 포함)
+- 점검: 빈 cell 비율, 원공간 최근접 이웃이 맵에서 같은·옆 cell에 놓인 비율, 같은 cell 특허끼리 CPC가 겹치는 비율
+
+**격자 크기 비교 (`grid_sweep.py`)**
+
+- 안쪽 cell마다 주변 8칸 평균 m으로 우연히 0건일 확률 e^(-m)을 구해(포아송 근사) 더합니다. 실제 빈 cell 수와 비교해 격자가 너무 촘촘한지 봅니다.
