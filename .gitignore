@@ -1,0 +1,13 @@
+# 데이터: Wisdomain(유료 DB)에서 받은 원본과 그 파생물은 공개 저장소에 올리지 않는다
+data/
+
+# 팀 내부 자료·스크린샷
+*.pdf
+*.png
+
+# Python
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
