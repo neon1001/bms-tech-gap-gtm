@@ -9,7 +9,8 @@
 | 1. 데이터 정제 | `src/preprocess.py` | 완료 |
 | 2. 문장 임베딩 (bge-m3) | `src/embed.py` | 완료 |
 | 2-1. 임베딩 점검 | `src/check_embeddings.py` | 완료 |
-| 3. TF-IDF, 4. GTM 기술맵, 5~8. 공백 탐색·역매핑·해석 | - | 예정 |
+| 3. TF-IDF (공백 해석용) | `src/tfidf.py` | 완료 |
+| 4. GTM 기술맵, 5~8. 공백 탐색·역매핑·해석 | - | 예정 |
 
 ## 데이터
 
@@ -28,6 +29,7 @@ pip install -r requirements.txt
 python3 src/preprocess.py         # 정제 → data/interim/patents_clean.parquet
 python3 src/embed.py              # 임베딩 → data/interim/emb_bge_m3.npy
 python3 src/check_embeddings.py   # 점검 → data/interim/emb_check.json
+python3 src/tfidf.py              # TF-IDF → data/interim/tfidf_matrix.npz
 ```
 
 - `embed.py`는 처음 실행할 때 bge-m3 가중치(2.27GB)를 내려받습니다.
@@ -51,3 +53,10 @@ python3 src/check_embeddings.py   # 점검 → data/interim/emb_check.json
 
 - 무결성: shape, NaN, 벡터 길이, 행 순서
 - 의미가 가까운 이웃 10개끼리 CPC가 겹치는 비율을 무작위 쌍, 글자 단위 TF-IDF와 비교합니다.
+
+**TF-IDF (`tfidf.py`)**
+
+- GTM 학습에는 쓰지 않고, 학습이 끝난 뒤 공백 cell의 키워드를 읽는 데 씁니다.
+- Kiwi로 일반명사·고유명사·영문·숫자만 남기고, 특허 상투어를 불용어로 뺍니다.
+- 1~2-gram, 5건 미만·70% 초과 단어 제외, 최대 30,000개, sublinear TF, L2 정규화를 씁니다.
+- 행은 정제본과 같은 순서라서 임베딩·GTM 결과와 행끼리 바로 대응합니다.

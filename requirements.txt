@@ -6,3 +6,5 @@ scipy==1.17.1
 scikit-learn==1.8.0
 torch==2.13.0
 transformers==5.5.0
+kiwipiepy==0.24.0
+joblib==1.5.3

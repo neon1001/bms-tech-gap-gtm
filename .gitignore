@@ -5,6 +5,9 @@ data/
 *.pdf
 *.png
 
+# 팀원에게 받은 원본 코드 (TF-IDF 부분은 src/tfidf.py로 옮김)
+team.py
+
 # Python
 __pycache__/
 *.pyc
