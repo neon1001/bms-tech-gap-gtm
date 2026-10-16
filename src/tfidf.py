@@ -1,6 +1,7 @@
 """정제본 → TF-IDF 행렬 (공백 해석용).
 
 텍스트 정제·Kiwi 형태소 분석·불용어·벡터라이저 설정은 팀원 코드(team.py)의 TF-IDF 부분을 그대로 옮겼다.
+바꾼 점은 하나다: 숫자(SN) 품사는 남기지 않는다. 숫자 토큰은 대부분 '제1'·'제2' 같은 서수에서 나온 잡음이었다.
 행은 정제본과 같은 순서라서 임베딩·GTM 결과와 행끼리 바로 대응한다.
 
 입력:  data/interim/patents_clean.parquet
@@ -31,7 +32,7 @@ STOPWORDS = {
     # 너무 일반적인 기술 문서 표현
     "장치", "방법", "시스템", "부", "부재", "단계", "정보", "값", "기능",
 }
-KEEP_TAGS = ("NNG", "NNP", "SL", "SN")   # 일반명사, 고유명사, 영어, 숫자
+KEEP_TAGS = ("NNG", "NNP", "SL")   # 일반명사, 고유명사, 영어
 
 
 def basic_clean(text):
@@ -48,7 +49,7 @@ def tokenize(text, kiwi):
         word = t.form.lower().strip()
         if not t.tag.startswith(KEEP_TAGS):
             continue
-        # 한국어 1글자는 버리고, BMS·EV 같은 영문·숫자 약어는 남긴다
+        # 한국어 1글자는 버리고, BMS·EV 같은 영문 약어는 남긴다
         if len(word) < 2 and not re.search(r"[a-z0-9]", word):
             continue
         if word in STOPWORDS:
