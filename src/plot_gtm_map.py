@@ -54,7 +54,7 @@ def panel(ax, M, cmap, title, empty, vmin=None, vmax=None, label=""):
     return ax
 
 
-def main(grid=25):
+def main(grid=30):
     FIG.mkdir(parents=True, exist_ok=True)
     df = pd.read_parquet(INTERIM / "patents_clean.parquet")
     m = pd.read_parquet(INTERIM / f"gtm/grid{grid}/patents.parquet")
@@ -108,4 +108,4 @@ def main(grid=25):
 
 
 if __name__ == "__main__":
-    main(int(sys.argv[1]) if len(sys.argv) > 1 else 25)
+    main(int(sys.argv[1]) if len(sys.argv) > 1 else 30)

@@ -11,8 +11,8 @@
 | 2-1. 임베딩 점검 | `src/check_embeddings.py` | 완료 |
 | 3. TF-IDF (공백 해석용) | `src/tfidf.py` | 완료 |
 | 4. GTM 기술맵 (20·25·30 격자) | `src/gtm.py`, `src/gtm_map.py`, `src/plot_gtm_map.py` | 완료 |
-| 4-1. 격자 크기 비교 | `src/grid_sweep.py` | 완료 (기본 격자는 결정 전, 30×30 검토 중) |
-| 5~8. 공백 탐색·역매핑·해석 | - | 예정 |
+| 4-1. 격자 크기 비교 | `src/grid_sweep.py` | 완료 (기본 격자 30×30으로 결정) |
+| 5~8. 공백 탐색·가짜 공백 제거·역매핑·해석 | - | 예정 |
 
 ## 데이터
 
@@ -33,7 +33,7 @@ python3 src/embed.py              # 임베딩 → data/interim/emb_bge_m3.npy
 python3 src/check_embeddings.py   # 점검 → data/interim/emb_check.json
 python3 src/tfidf.py              # TF-IDF → data/interim/tfidf_matrix.npz
 python3 src/gtm_map.py            # GTM 학습·점검 → data/interim/gtm/
-python3 src/plot_gtm_map.py 25    # 점검 그림 → outputs/figures/ (숫자 = 격자 크기)
+python3 src/plot_gtm_map.py 30    # 점검 그림 → outputs/figures/ (숫자 = 격자 크기, 기본 30)
 python3 src/grid_sweep.py         # 격자 크기 비교 → data/interim/gtm/grid_sweep.csv
 ```
 
@@ -76,3 +76,4 @@ python3 src/grid_sweep.py         # 격자 크기 비교 → data/interim/gtm/gr
 **격자 크기 비교 (`grid_sweep.py`)**
 
 - 안쪽 cell마다 주변 8칸 평균 m으로 우연히 0건일 확률 e^(-m)을 구해(포아송 근사) 더합니다. 실제 빈 cell 수와 비교해 격자가 너무 촘촘한지 봅니다.
+- 비교 결과 **기본 격자를 30×30**으로 정했습니다. 주변이 붐비는(평균 5건 이상) 빈 cell이 36개로 가장 많고, 우연히 빌 것으로 기대되는 cell은 3.3개입니다. 더 촘촘하면(35×35 이상) 우연한 빈 칸이 급격히 늘어납니다.
